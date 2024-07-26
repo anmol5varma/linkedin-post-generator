@@ -18,7 +18,8 @@ const FONTS = {
     },
     bebas: {
         32: './assets/fonts/9_pRyl4NLtHkIfk_6bB_iJBs.ttf.fnt',
-        64: './assets/fonts/HbpVr20lEwT8fTg_BEUYxL5M.ttf.fnt'
+        64: './assets/fonts/HbpVr20lEwT8fTg_BEUYxL5M.ttf.fnt',
+        100: './assets/fonts/EWv2E5MnIngkRCl9fuK9bLi0.ttf.fnt',
     },
 }
 

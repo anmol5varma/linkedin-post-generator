@@ -1,10 +1,49 @@
 const Jimp = require('jimp');
+const Color = require('color')
 
 // Function to create a 500x500 pixel image
 const createImage = ({ width = 500, height = 500, bgColor = '#FFFFFF' }) => {
     try {
         // Create a new blank image, 500x500 pixels, with a white background
         const image = new Jimp(width, height, bgColor);
+        return image
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Function to create a 500x500 pixel image
+const createBaseImage = ({ width = 500, height = 500, bgColor = '#FFFFFF' }) => {
+    const numberOfLines = 16
+    try {
+        // Create a new blank image, 500x500 pixels, with a white background
+        const image = new Jimp(width, height, bgColor);
+
+        // Calculate the distance between the lines
+        const distance = width / (numberOfLines + 1);
+
+        // Reduce the alpha of the color
+        let color = Color(bgColor).alpha(0.85).rgb();
+
+        // Convert the color to Jimp's integer format
+        const lineColor = Jimp.rgbaToInt(color.red(), color.green(), color.blue(), color.alpha() * 255);
+
+        // Draw the vertical lines
+        for (let i = 1; i <= numberOfLines; i++) {
+            const x = Math.round(i * distance);
+            for (let y = 0; y < height; y++) {
+                image.setPixelColor(lineColor, x, y);
+            }
+        }
+
+        // Draw the horizontal lines
+        for (let i = 1; i <= numberOfLines; i++) {
+            const y = Math.round(i * distance);
+            for (let x = 0; x < height; x++) {
+                image.setPixelColor(lineColor, x, y);
+            }
+        }
+
         return image
     } catch (error) {
         console.error('Error:', error);
@@ -41,6 +80,7 @@ const stringifyNumbers = number => number < 10 ? `0${number}` : number.toString(
 
 module.exports = {
     createImage,
+    createBaseImage,
     createCustomFont,
     saveImage,
     stringifyNumbers
