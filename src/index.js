@@ -1,8 +1,12 @@
 const Jimp = require('jimp');
 const Color = require('color')
+const { writeFile } = require('fs/promises')
 const HexColor = require('./colors.js')
+const content = require('./content.js')
 const { createBaseImage, createCustomFont, saveImage, stringifyNumbers } = require('./utils');
 const { IMAGE_WIDTH, PADDING, DP_DIAMETER, FONTS, PAGINATION_PADDING } = require('./constants.js');
+const { generateCaption } = require('./markdown.js');
+const { generatePdf } = require('./pdf.js');
 
 const addTitle = async ({ baseImage, text, y, color }) => {
     const { textImage } = await createCustomFont({ text, color, fontType: FONTS.roboto_black[100] });
@@ -143,6 +147,7 @@ const addAuthorDetails = async (baseImage) => {
 const main = async (content) => {
     const bgColor = Color(HexColor.skyblue).hexa();
     const date = new Date()
+    const imagePath = []
     await Promise.all(
         content.map(async (page, idx) => {
             const baseImage = createBaseImage({ bgColor, width: IMAGE_WIDTH, height: IMAGE_WIDTH })
@@ -151,36 +156,18 @@ const main = async (content) => {
                 image = await addHeaderToImage(image, { text: page.title, length: content.reduce((total, page) => total + page.title.length + page.description.length, 0) })
             else
                 image = await addContentToImage(image, page, stringifyNumbers(idx), stringifyNumbers(content.length - 1))
-            await saveImage(image, `./output/${date.toDateString()}/${idx}.png`)
+            imagePath.push(`./output/${date.toDateString()}/images/${idx}.png`)
+            await saveImage(image, `./output/${date.toDateString()}/images/${idx}.png`)
         })
     )
     let authorImage = createBaseImage({ bgColor, width: IMAGE_WIDTH, height: IMAGE_WIDTH })
     authorImage = await addAuthorDetails(authorImage)
-    await saveImage(authorImage, `./output/${date.toDateString()}/${content.length}.png`)
+    imagePath.push(`./output/${date.toDateString()}/images/${content.length}.png`)
+    await saveImage(authorImage, `./output/${date.toDateString()}/images/${content.length}.png`)
+    const md = generateCaption(content)
+    await writeFile(`./output/${date.toDateString()}/caption.md`, md)
+    const pdfPath = `./output/${date.toDateString()}/${content[0].title}.pdf`
+    generatePdf(imagePath, pdfPath)
 }
-
-const content = [
-    {
-        title: 'Getting started with Web development',
-        description: '',
-        tip: ''
-    }, {
-        title: 'Understand the basics',
-        description: 'Before diving into coding, it is important to understand the fundamental concepts of web development.',
-        tip: ''
-    }, {
-        title: 'Learn the Core Technologies',
-        description: 'Learn front-end development using HTML/CSS/JS and back-end development with node/java/python/ruby.',
-        tip: ''
-    }, {
-        title: 'Get Comfortable with Development Tools',
-        description: 'Learn tools/tech like Text Editor(VSCode), version control(GIT), browser dev tool(inspect elements).',
-        tip: ''
-    }, {
-        title: 'Build a Basic Project',
-        description: 'Create a simple project applying everything that you have learnt. Examples: Todo app, personal portfolio, basic blog using CRUD.',
-        tip: ''
-    }
-]
 
 main(content)
