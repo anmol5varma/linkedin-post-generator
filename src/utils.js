@@ -23,7 +23,7 @@ const createBaseImage = ({ width = 500, height = 500, bgColor = '#FFFFFF' }) => 
         const distance = width / (numberOfLines + 1);
 
         // Reduce the alpha of the color
-        let color = Color(bgColor).alpha(0.85).rgb();
+        let color = Color(bgColor).alpha(0.8).rgb();
 
         // Convert the color to Jimp's integer format
         const lineColor = Jimp.rgbaToInt(color.red(), color.green(), color.blue(), color.alpha() * 255);

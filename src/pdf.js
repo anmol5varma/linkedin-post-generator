@@ -12,12 +12,16 @@ const generatePdf = (imagePaths, pdfPath) => {
     const doc = new PDFDocument({ autoFirstPage: false });
     doc.pipe(fs.createWriteStream(pdfPath));
 
-    imagePaths.forEach(imagePath => {
+    for(let imagePath of imagePaths){
         addImageToNewPage(doc, imagePath, IMAGE_WIDTH, IMAGE_WIDTH)
-    });
+    }
+
     doc.end();
 }
 
+const formatTitle = title => title.replaceAll('\n', ' ')
+
 module.exports = {
-    generatePdf
+    generatePdf,
+    formatTitle
 }

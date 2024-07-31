@@ -1,33 +1,36 @@
+const HexColor = require('./colors.js')
+
 const content = [
     {
-        title: 'Getting started with Web development',
-        description: '',
-        tip: ''
-    }, {
-        title: 'Understand the basics',
-        description: 'Before diving into coding, it is important to understand the fundamental concepts of web development.',
-        tip: ''
-    }, {
-        title: 'Learn the Core Technologies',
-        description: 'Web development involves creating and maintaining websites. It can be divided into two main areas. Frontend Development: What users interact with on their web browsers. Backend Development: The server-side logic and databases that power the frontend.',
-        tip: ''
-    }, {
-        title: 'Learning the building blocks - Frontend',
-        description: 'HTML: Learn about tags, elements, attributes, and creating a simple HTML document. CSS: Learn about selectors, properties, values, and how to link CSS to HTML. JS: Learn about variables, functions, loops, events and manipulating the DOM.',
-        tip: ''
-    }, {
-        title: 'Learning the building blocks - Backend',
-        description: 'Explore server-side languages like Node.js (JavaScript), Python, Ruby, Java or GO. Learn about SQL databases (MySQL, PostgreSQL) and NoSQL databases (MongoDB).',
-        tip: ''
-    }, {
-        title: 'Get Comfortable with Development Tools',
-        description: 'Learn tools/tech like Text Editor(VSCode), version control(GIT), browser dev tool(inspect elements).',
-        tip: ''
-    }, {
-        title: 'Build a Basic Project',
-        description: 'Create a simple project applying everything that you have learnt. Examples: Todo app, personal portfolio, basic blog using CRUD.',
-        tip: ''
+        "title": "How to\nupskill\nyourself?",
+        "description": ""
+    },
+    {
+        "title": "Online Courses",
+        "description": "Enroll in online courses from platforms to gain new skills in your field. Bonus: You can find most of the things for free if you go some searching."
+    },
+    {
+        "title": "Certifications",
+        "description": "Pursue industry-recognized certifications to validate your skills and enhance your professional credentials."
+    },
+    {
+        "title": "Networking",
+        "description": "Engage with professionals in your industry through conferences, online forums and meetups to exchange knowledge and learn from others' experiences."
+    },
+    {
+        "title": "Reading",
+        "description": "Read books, articles, and research papers related to your field to deepen your understanding and stay informed about new developments."
+    },
+    {
+        "title": "Mentorship",
+        "description": "Seek guidance from mentors who can provide valuable insights, feedback, and support in your professional growth."
+    },
+    {
+        "title": "Personal Projects",
+        "description": "Undertake personal projects that challenge you to apply and expand your skill set in real-world scenarios."
     }
-];
+]
 
-module.exports = content
+const bgColorHex = HexColor.salmon
+
+module.exports = { content, bgColorHex }

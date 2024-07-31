@@ -2,11 +2,12 @@ const Jimp = require('jimp');
 const Color = require('color')
 const { writeFile } = require('fs/promises')
 const HexColor = require('./colors.js')
-const content = require('./content.js')
+const { content, bgColorHex } = require('./content.js')
 const { createBaseImage, createCustomFont, saveImage, stringifyNumbers } = require('./utils');
 const { IMAGE_WIDTH, PADDING, DP_DIAMETER, FONTS, PAGINATION_PADDING } = require('./constants.js');
 const { generateCaption } = require('./markdown.js');
-const { generatePdf } = require('./pdf.js');
+const { generatePdf, formatTitle } = require('./pdf.js');
+const { getHashTags } = require('./hashtags.js');
 
 const addTitle = async ({ baseImage, text, y, color }) => {
     const { textImage } = await createCustomFont({ text, color, fontType: FONTS.roboto_black[100] });
@@ -32,7 +33,7 @@ const addHeaderToImage = async (baseImage, { text, length }) => {
 
     // Add text to the image
     await Promise.all(
-        text.split(' ')
+        text.split('\n')
             .map(async (line, idx) => addTitle({ baseImage, text: line.toUpperCase(), color: blackColor, y: idx * 125 + 150 }))
     )
     // await writeWordWrap(baseImage, { text, font: FONTS.roboto_black[100], color: blackColor, size: 100, x: 50, y: 150 }, {marginRight: 250, yGap: 25, xGap: 20})
@@ -104,7 +105,6 @@ const addFooter = async (baseImage) => {
 
 //Add last page
 const addAuthorDetails = async (baseImage) => {
-    const color = { r: 200, g: 100, b: 100 }
     const blackColor = Color(HexColor.black).object()
 
     // Create a custom font with the desired color and size
@@ -128,7 +128,7 @@ const addAuthorDetails = async (baseImage) => {
     baseImage.composite(photo, x1, y)
 
     // Create a custom font with the desired color and size
-    const { textImage, textWidth, textHeight } = await createCustomFont({ text: 'Thank you for reading', color, fontType: FONTS.roboto[64] });
+    const { textImage, textWidth, textHeight } = await createCustomFont({ text: 'Thank you for reading', color: blackColor, fontType: FONTS.roboto[64] });
 
     // Calculate text position (centered)
     const x = (baseImage.bitmap.width - textWidth) / 2; // Adjust y position as needed
@@ -145,10 +145,10 @@ const addAuthorDetails = async (baseImage) => {
 }
 
 const main = async (content) => {
-    const bgColor = Color(HexColor.skyblue).hexa();
     const date = new Date()
-    const imagePath = []
-    await Promise.all(
+    const folderDate = date.toDateString()
+    const bgColor = Color(bgColorHex).hexa();
+    const imagePath = await Promise.all(
         content.map(async (page, idx) => {
             const baseImage = createBaseImage({ bgColor, width: IMAGE_WIDTH, height: IMAGE_WIDTH })
             let image = await addFooter(baseImage)
@@ -156,17 +156,20 @@ const main = async (content) => {
                 image = await addHeaderToImage(image, { text: page.title, length: content.reduce((total, page) => total + page.title.length + page.description.length, 0) })
             else
                 image = await addContentToImage(image, page, stringifyNumbers(idx), stringifyNumbers(content.length - 1))
-            imagePath.push(`./output/${date.toDateString()}/images/${idx}.png`)
-            await saveImage(image, `./output/${date.toDateString()}/images/${idx}.png`)
+            await saveImage(image, `./output/${folderDate}/images/${idx}.png`)
+            return `./output/${folderDate}/images/${idx}.png`
         })
     )
     let authorImage = createBaseImage({ bgColor, width: IMAGE_WIDTH, height: IMAGE_WIDTH })
     authorImage = await addAuthorDetails(authorImage)
-    imagePath.push(`./output/${date.toDateString()}/images/${content.length}.png`)
-    await saveImage(authorImage, `./output/${date.toDateString()}/images/${content.length}.png`)
-    const md = generateCaption(content)
-    await writeFile(`./output/${date.toDateString()}/caption.md`, md)
-    const pdfPath = `./output/${date.toDateString()}/${content[0].title}.pdf`
+    imagePath.push(`./output/${folderDate}/images/${content.length}.png`)
+    await saveImage(authorImage, `./output/${folderDate}/images/${content.length}.png`)
+    content[0].title = formatTitle(content[0].title)
+    let md = generateCaption(content)
+    const hashtags = await getHashTags(content[0].title)
+    md += hashtags
+    await writeFile(`./output/${folderDate}/caption.md`, md)
+    const pdfPath = `./output/${folderDate}/${content[0].title}.pdf`
     generatePdf(imagePath, pdfPath)
 }
 
