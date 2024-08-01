@@ -7,7 +7,7 @@ const content = [
     },
     {
         "title": "Online Courses",
-        "description": "Enroll in online courses from platforms to gain new skills in your field. Bonus: You can find most of the things for free if you go some searching."
+        "description": "Enroll in online courses from platforms to gain new skills in your field. Bonus: You'll' find most of the things for free, provided you do some searching."
     },
     {
         "title": "Certifications",
@@ -15,7 +15,7 @@ const content = [
     },
     {
         "title": "Networking",
-        "description": "Engage with professionals in your industry through conferences, online forums and meetups to exchange knowledge and learn from others' experiences."
+        "description": "Engage with professionals in your industry through conferences, online forums and meetups to exchange knowledge and learn from others experiences."
     },
     {
         "title": "Reading",

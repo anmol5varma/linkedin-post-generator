@@ -10,7 +10,7 @@ const generateCaption = content => {
             }, '')
         result += pointList
     }
-    result+= '\n' + '🌟 Book a free quick chat with me at https://topmate.io/anmol5varma/ 🌟'
+    result+= '\n' + '🌟 Book a FREE quick chat with me at https://topmate.io/anmol5varma/ 🌟'
     return result
 }
 
