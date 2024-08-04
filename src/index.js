@@ -9,6 +9,8 @@ const { generateCaption } = require('./markdown.js');
 const { generatePdf, formatTitle } = require('./pdf.js');
 const { getHashTags } = require('./hashtags.js');
 
+const DEFAULT_CTA = 'follow for more\nsuch content'
+
 const addTitle = async ({ baseImage, text, y, color }) => {
     const { textImage } = await createCustomFont({ text, color, fontType: FONTS.roboto_black[100] });
     baseImage.composite(textImage, PADDING, y)
@@ -104,7 +106,7 @@ const addFooter = async (baseImage) => {
 }
 
 //Add last page
-const addAuthorDetails = async (baseImage) => {
+const addAuthorDetails = async (baseImage, description) => {
     const blackColor = Color(HexColor.black).object()
 
     // Create a custom font with the desired color and size
@@ -134,13 +136,12 @@ const addAuthorDetails = async (baseImage) => {
     const x = (baseImage.bitmap.width - textWidth) / 2; // Adjust y position as needed
 
     baseImage.composite(textImage, x, 2 * PADDING)
-
-    // Add text to the image
-    const follow = await createCustomFont({ text: 'Follow for more', color: blackColor, fontType: FONTS.bebas[100] });
-    const content = await createCustomFont({ text: 'such content', color: blackColor, fontType: FONTS.bebas[100] });
-
-    baseImage.composite(follow.textImage, (baseImage.bitmap.width - follow.textWidth) / 2, 300);
-    baseImage.composite(content.textImage, (baseImage.bitmap.width - content.textWidth) / 2, 430);
+    await Promise.all(
+        description.split('\n').map(async (text, i) => {
+            const cta = await createCustomFont({ text, color: blackColor, fontType: FONTS.bebas[100] });
+            baseImage.composite(cta.textImage, (baseImage.bitmap.width - cta.textWidth) / 2, 300 + i * 130);
+        })
+    )
     return baseImage;
 }
 
@@ -148,23 +149,30 @@ const main = async (content) => {
     const date = new Date()
     const folderDate = date.toDateString()
     const bgColor = Color(bgColorHex).hexa();
+    content[content.length - 1].description = content[content.length - 1]?.description ?? DEFAULT_CTA
     const imagePath = await Promise.all(
         content.map(async (page, idx) => {
             const baseImage = createBaseImage({ bgColor, width: IMAGE_WIDTH, height: IMAGE_WIDTH })
-            let image = await addFooter(baseImage)
-            if (idx === 0)
-                image = await addHeaderToImage(image, { text: page.title, length: content.reduce((total, page) => total + page.title.length + page.description.length, 0) })
-            else
-                image = await addContentToImage(image, page, stringifyNumbers(idx), stringifyNumbers(content.length - 1))
+            let image;
+            if (idx === content.length - 1)
+                image = await addAuthorDetails(baseImage, page.description)
+            else {
+                image = await addFooter(baseImage)
+                if (idx === 0)
+                    image = await addHeaderToImage(image, { text: page.title, length: content.reduce((total, page) => total + page.title.length + page.description.length, 0) })
+                else
+                    image = await addContentToImage(image, page, stringifyNumbers(idx), stringifyNumbers(content.length - 1))
+            }
             await saveImage(image, `./output/${folderDate}/images/${idx}.png`)
             return `./output/${folderDate}/images/${idx}.png`
         })
     )
-    let authorImage = createBaseImage({ bgColor, width: IMAGE_WIDTH, height: IMAGE_WIDTH })
-    authorImage = await addAuthorDetails(authorImage)
-    imagePath.push(`./output/${folderDate}/images/${content.length}.png`)
-    await saveImage(authorImage, `./output/${folderDate}/images/${content.length}.png`)
+    // let authorImage = createBaseImage({ bgColor, width: IMAGE_WIDTH, height: IMAGE_WIDTH })
+    // authorImage = await addAuthorDetails(authorImage)
+    // imagePath.push(`./output/${folderDate}/images/${content.length}.png`)
+    // await saveImage(authorImage, `./output/${folderDate}/images/${content.length}.png`)
     content[0].title = formatTitle(content[0].title)
+    content[content.length - 1].description = formatTitle(content[content.length - 1]?.description)
     let md = generateCaption(content)
     const hashtags = await getHashTags(content[0].title)
     md += hashtags

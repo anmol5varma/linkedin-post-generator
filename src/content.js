@@ -2,35 +2,35 @@ const HexColor = require('./colors.js')
 
 const content = [
     {
-        "title": "How to\nupskill\nyourself?",
-        "description": ""
+      "title": "5 Hacks to\nBoost Your\nProductivity",
+      "description": ""
     },
     {
-        "title": "Online Courses",
-        "description": "Enroll in online courses from platforms to gain new skills in your field. Bonus: You'll' find most of the things for free, provided you do some searching."
+      "title": "Time Blocking",
+      "description": "Allocate specific time slots for different tasks throughout your day. This helps in staying focused and avoiding multitasking."
     },
     {
-        "title": "Certifications",
-        "description": "Pursue industry-recognized certifications to validate your skills and enhance your professional credentials."
+      "title": "Pomodoro Technique",
+      "description": "Work in 25-minute intervals followed by a 5-minute break. After four work sessions, take a longer break of 15-30 minutes. This method can help maintain focus and reduce burnout."
     },
     {
-        "title": "Networking",
-        "description": "Engage with professionals in your industry through conferences, online forums and meetups to exchange knowledge and learn from others experiences."
+      "title": "Prioritize Tasks",
+      "description": "Use the Eisenhower Matrix to categorize tasks based on urgency and importance. Focus on urgent and important tasks first."
     },
     {
-        "title": "Reading",
-        "description": "Read books, articles, and research papers related to your field to deepen your understanding and stay informed about new developments."
+      "title": "Minimize Distractions",
+      "description": "Turn off notifications on your phone and use apps that block distracting websites during work hours."
     },
     {
-        "title": "Mentorship",
-        "description": "Seek guidance from mentors who can provide valuable insights, feedback, and support in your professional growth."
+      "title": "Stay Hydrated and Move",
+      "description": "Ensure you drink enough water and take short walks or stretches throughout the day. This can help keep your energy levels up and improve focus."
     },
     {
-        "title": "Personal Projects",
-        "description": "Undertake personal projects that challenge you to apply and expand your skill set in real-world scenarios."
+      "title": "CTA",
+      "description": "What are your favorite\nproductivity hacks?\nShare in the comments!"
     }
-]
+  ]
 
-const bgColorHex = HexColor.salmon
+const bgColorHex = HexColor.wheat
 
 module.exports = { content, bgColorHex }
