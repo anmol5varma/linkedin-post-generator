@@ -2,7 +2,7 @@ const Jimp = require('jimp');
 const Color = require('color')
 const { writeFile } = require('fs/promises')
 const HexColor = require('./colors.js')
-const { content, bgColorHex } = require('./content.js')
+const { content, bgColorHex, authorName } = require('./content.js')
 const { createBaseImage, createCustomFont, saveImage, stringifyNumbers } = require('./utils');
 const { IMAGE_WIDTH, PADDING, DP_DIAMETER, FONTS, PAGINATION_PADDING } = require('./constants.js');
 const { generateCaption } = require('./markdown.js');
@@ -85,7 +85,7 @@ const addContentToImage = async (baseImage, page, idx, total) => {
 const addFooter = async (baseImage) => {
     const color = { r: 0, g: 0, b: 0 }
     // Create a custom font with the desired color and size
-    const { textImage, textWidth } = await createCustomFont({ text: 'Anmol Varma', color, fontType: FONTS.bebas[64] });
+    const { textImage, textWidth } = await createCustomFont({ text: authorName, color, fontType: FONTS.bebas[64] });
 
     // Calculate text position (centered)
     const y = (baseImage.bitmap.height - (DP_DIAMETER + PADDING)); // Adjust y position as needed
@@ -110,7 +110,7 @@ const addAuthorDetails = async (baseImage, description) => {
     const blackColor = Color(HexColor.black).object()
 
     // Create a custom font with the desired color and size
-    const author = await createCustomFont({ text: 'Anmol Varma', color: blackColor, fontType: FONTS.bebas[100] });
+    const author = await createCustomFont({ text: authorName, color: blackColor, fontType: FONTS.bebas[100] });
 
     const like = await createCustomFont({ text: 'like . follow . share', color: blackColor, fontType: FONTS.satisfy[32] });
 

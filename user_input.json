@@ -1,0 +1,20 @@
+{
+    "title": "How to post on linkedin daily?",
+    "pages": [
+        {
+            "heading": "Setup this repo locally",
+            "description": "Download this repo and run `npm install`."
+        },{
+            "heading": "Fill the template",
+            "description": "Update the user_input.json to add your content. Remember to select the background color as well."
+        },{
+            "heading": "Abra-ca-dabra",
+            "description": "Run `npm start` to generate pdf and post content. You can find it under the `output > <current_date>`."
+        },{
+            "heading": "And all set",
+            "description": "Verify the pdf and the content before posting. Add a couple of hashtags yourself as well."
+        }
+    ],
+    "cta": "Follow for more such content",
+    "bgColor": "color"
+}
